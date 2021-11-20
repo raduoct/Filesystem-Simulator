@@ -1,0 +1,73 @@
+	README - Tema1 IOCLA - Sistemul lui Biju
+	
+		Radu Octavian 323CC
+	
+	
+	Implementarea cerintelor.
+	
+	Cerinta :
+	
+	1)touch
+	Verific daca head_children_files este NULL, daca este NULL construiesc fileul ( aloc memorie pt File* si pt char* nume) si fileul nou devine head_children_files,
+	altfel parcurg lista de fisiere si daca gasesc un fisier cu numele afisez mesajul corespunzator si ma opresc din parcurs lista. Daca ajung la finalul listei inseamna ca pot adauga
+	noul file.
+	
+	2)mkdir 
+	Implementarea este aceeasi ca a functiei touch.Verific daca head_children_dirs este NULL, daca este NULL construiesc directorul ( aloc memorie pt File* si pt char* nume) 
+	si directorul nou devine head_children_dirs, altfel parcurg lista de directoare si daca gasesc un director cu numele dat ca si parametru afisez mesajul corespunzator si ma opresc din parcurs 		lista. Daca ajung la finalul listei inseamna ca pot adauga noul director.
+	
+	3)ls
+	Parcurg lista de directoare incepand cu head_children_dirs si afisez numele fiecarui director, la fel si in cazul listei de fileuri.
+	
+	4)rm
+	Verific daca head_children_files este NULL si afisez mesaajul "Could not find the file", altfel verific lista incepand cu primul element separat, daca headul este fileul cautat il eliberez,
+	si noul head devine al 2 lea element din lista. Altfel, incep cu tmp din head si parcurg lista uitandu-ma mereu la urmatorul element pentru a putea conecta elementele corespunzator in cazul 
+	in care am gasit fileul ce trebuie sters. Daca am ajuns la final si nu am gasit fileul afisez mesajul "Could not find the file"
+	
+	5)rmdir
+	Implementarea este aceeasi ca la rm. Diferenta este ca ma folosesc de functia freedir, care imi elibereaza un director recursiv , atunci cand gasesc directorul ce trebuie sters.
+
+	
+	6)cd
+	Verific prima data daca argumentul este "..", dupa aceea verific ca directorul parinte nu este NULL, astfel prin apelarea repetata a comenzii "cd ..", functia imi va intoarce tot directorul 
+	home(root), altfel caut directorul cu numele corespunzator in lista de directoare si il intorc daca il gasec.
+	
+	7)tree
+	Am implementat functia tree recursiv, auto apeland cu level+1 cand dau desccend, pentru a printa corespunzator ierarhia de fisere si directoare.
+	
+	8)pwd
+	Am implementat functia pwd recursiv, cu ajutorul functiei strcat care imi intoarce pointer la adresa noului sir concatenat, cazul de baza intorcand un fisier alocat dinamic care contine
+	"/home", astfel construindu-se recursiv calea directorului curent. Intorcand char* pot elibera memoria alocata in functia main.
+	
+	9)stop
+	Functia stop se asigura ca directorul primit ca argument este home, iar daca nu parcurg ierarhia intorcandu-ma la el, dupa care apelez freedir pentru a elibera memoria folosita in main.
+	
+	
+	10)memory management
+	Eliberarea memoriei este handleuita de freedir, eliberand manual doar char* intors de pwd. De asemenea in functiile rm si rmdir eliberez de asemenea manual listele de fileuri, parcurgand
+	lista retin elementul care sunt intr-o variabila auxiliara, eliberez numele, trec la urmatorul  element cu tmp, dupa care eliberez aux.
+	
+	11)mv
+	In cadrul functiei mv apelez functile mvfiles si mvdir care imi intorc 0 daca nu am gasit fileul/directorul dorit, in cazul in care si mvdir si mfiles intorc 0 afisez mesajul"File/Director
+	not found".In cazul in care intorc 1 inseamna ca au gasit directorul oldname si l-au redenumit si adaugat la finalul liste de file?directoare. In cazul in care intorc -1, directorul?fileul
+	newname deja exista, astfel nu se poate realiza mv ul si se afiseaza mesajul "File/Director already exists", in acest caz este de ajuns doar una dintre functii sa intoarca -1.
+	Functiile mvdir si mfiles au aceeasi implementare, diferenta fiind ca se aplica pe structuri de date diferite. In ambele functii apelez mvexists, functie ce verifica daca deja exista
+	un director sau un file cu numele newname, in caz in care intoarc 1, astfel sarind peste efectuarea mv ului, functiile mvdir si mvfiles intorcand -1. Daca functia mvexists intoarce 0
+	inseamnaa ca nu exista un file/director cu numele newname, si se verifica in fiecare functie daca exista un director/file cu numele oldname. In fiecare functie separat daca se gaseste
+	fileul/directorul oldname retin intr-un pointer elementul dinaintea sa din lista de directoare/fileuri pentru a putea realiz eliminarea din ordinea curenta a listei corespunzator si pentru
+	a il putea adauga la finalul liste. Am tratat de asemenea cazurile speciale in care:
+	a)fileul/directorul oldname esti capul listei fiind singurul element, caz in care doar schimb numele cu cel newname
+	b)lista este compusa din doua elemente si primul este fileul/directorul cautat caz in care, fac al doilea element noul head si il adaug la final pe directorul/fileul oldname corespunzator
+	si il redenumesc
+	c)cazul in care fileul/directorul cautat este ultimul element din lista, in care doar redenumesc fileul/directorul cu newname
+	Cazurile a si b au aparut din cauza faptului ca in cautarea file/directorului oldname cand parcurg lista trebuie sa retin elementul din fata sa pentru a putea conecta elemntul din fata
+	si urmatorul element in cazul in care il gasesc pe acel element ce trebuie eliminat, astfel aparand necesitatea de a verifica separat primul element al listei(headu).
+	
+	
+	
+	12)main
+	In functia main, am realizat citirea si apelarea functiilor. Mai intai apelez functia init, ce imi intoarce directorul root(home) ce are numele "home" si pointeaza spre NULL cu fiecare pointer
+	din cadrul structuri Dir, dupa care citesc cu ajutorul variabilei buffer comenziile, pe baza comenzii continui sa citesc daca este necesar si primul argument arg1 si in cazul functiei mv
+	ambele argumente. Cand in variabila buffer se afla "stop" opresc citirea si apelez functia stop, pentru a elibera memoria folosita.
+	
+	
